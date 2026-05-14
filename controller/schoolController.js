@@ -12,6 +12,7 @@ exports.addSchool = (req, res) => {
         });
     }
 
+
     if (
         typeof latitude !== "number" ||
         typeof longitude !== "number"

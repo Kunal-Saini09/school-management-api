@@ -8,6 +8,7 @@ const {
 
 router.post("/addSchool", addSchool);
 
+
 router.get("/listSchools", listSchools);
 
 module.exports = router;
