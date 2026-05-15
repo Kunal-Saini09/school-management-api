@@ -23,27 +23,39 @@ exports.addSchool = (req, res) => {
         });
     }
 
-    const sql =
-        "INSERT INTO schools (name, address, latitude, longitude) VALUES (?, ?, ?, ?)";
-
-    db.query(
-        sql,
-        [name, address, latitude, longitude],
-        (err, result) => {
-            if (err) {
-                return res.status(500).json({
-                    success: false,
-                    error: err.message,
-                });
-            }
-
-            res.status(201).json({
-                success: true,
-                message: "School added successfully",
-                schoolId: result.insertId,
+    // Get the next ID by finding the max ID and incrementing it
+    db.query("SELECT MAX(id) as maxId FROM schools", (err, results) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                error: err.message,
             });
         }
-    );
+
+        const nextId = (results[0].maxId || 0) + 1;
+
+        const sql =
+            "INSERT INTO schools (id, name, address, latitude, longitude) VALUES (?, ?, ?, ?, ?)";
+
+        db.query(
+            sql,
+            [nextId, name, address, latitude, longitude],
+            (err, result) => {
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        error: err.message,
+                    });
+                }
+
+                res.status(201).json({
+                    success: true,
+                    message: "School added successfully",
+                    schoolId: nextId,
+                });
+            }
+        );
+    });
 };
 
 exports.listSchools = (req, res) => {
